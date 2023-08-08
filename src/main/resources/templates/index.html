@@ -37,7 +37,7 @@
         <div class="row m-3">
             <div th:each="data : ${data}" class="card" style="width: 18rem; margin: 3px;">
                 <div class="card-body">
-                    <img th:src="@{/streamImage(filename=${data.filename})}">
+                    <img th:src="@{/streamImage(filename=${data.filename})}" style="width: 200px; height:100px; object-fit: cover;">
                     <h5 th:text="${data.nama}" class="card-title"></h5>
                     <p th:text="${data.kategori}"></p>
                     <p th:text="${data.deskripsi}"></p>
