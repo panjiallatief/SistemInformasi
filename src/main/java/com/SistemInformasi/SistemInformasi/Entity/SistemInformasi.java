@@ -23,7 +23,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class SistemInformasi {
+public class SistemInformasi extends DateAudit {
     
     private static final long serialVersionUID = 1L;
     @Id

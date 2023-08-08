@@ -24,7 +24,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Media {
+public class Media extends DateAudit{
 
     private static final long serialVersionUID = 1L;
     @Id
