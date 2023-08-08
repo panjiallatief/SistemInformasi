@@ -17,6 +17,7 @@ import com.SistemInformasi.SistemInformasi.Entity.Media;
 import com.SistemInformasi.SistemInformasi.Entity.SistemInformasi;
 import com.SistemInformasi.SistemInformasi.Repository.Media_Repository;
 import com.SistemInformasi.SistemInformasi.Repository.Sistem_Informasi_Repository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -59,7 +60,6 @@ public class Sistem_Informasi_Controller {
     public String index(Model model) {
         List<SistemInformasi> dataa = sistem_informasi_repository.findAll(Sort.by(Sort.Direction.ASC, "updatedAt"));
         model.addAttribute("data", dataa);
-        System.out.println(dataa);
         return "index";
     }
 
@@ -117,15 +117,20 @@ public class Sistem_Informasi_Controller {
 
     }
 
-    // @GetMapping(value = "/findall")
-    // public ResponseEntity<Map> findall(Model model) {
-    //     Map data = new HashMap<>();
-        
-    //     List<SistemInformasi> dataPaging = sistem_informasi_repository.findAll(Sort.by(Sort.Direction.ASC, "updated_at"));
+    @GetMapping(value = "/find")
+    public ResponseEntity<Map> find(@RequestParam(required = true) Integer id,
+                                    @RequestParam(required = false) String filename) throws JsonProcessingException {
+        Map data = new HashMap<>();
 
-    //     data.put("data", dataPaging);
-    //     return new ResponseEntity<>(data, HttpStatus.OK);
-    // }
+            if (!sistem_informasi_repository.existsById(id)) {
+                data.put("message", "Data Tidak Ditemukan");
+                return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
+            }
+            SistemInformasi dataa = sistem_informasi_repository.findById(id).get();
+            data.put("data", dataa);
+            return new ResponseEntity<>(data, HttpStatus.OK);
+
+        }
 
     @PutMapping(value = "/editmateri")
     public ResponseEntity<Map> editmateri(@RequestParam(required = false) String nama, @RequestParam(required = false) String deskripsi, 
