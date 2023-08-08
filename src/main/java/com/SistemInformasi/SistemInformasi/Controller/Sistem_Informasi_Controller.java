@@ -1,7 +1,11 @@
 package com.SistemInformasi.SistemInformasi.Controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -23,15 +27,17 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.springframework.data.domain.Sort;
 import org.springframework.core.env.Environment;
-
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -50,8 +56,9 @@ public class Sistem_Informasi_Controller {
     private Media_Repository mediarepository;
 
     @GetMapping(value = "/")
-    public String index() {
-        
+    public String index(Model model) {
+        List<SistemInformasi> dataa = sistem_informasi_repository.findAll(Sort.by(Sort.Direction.ASC, "updated_at"));
+        model.addAttribute("data", dataa);
         return "index";
     }
 
@@ -108,4 +115,51 @@ public class Sistem_Informasi_Controller {
         return new ResponseEntity<>(data, HttpStatus.OK);
 
     }
+
+    // @GetMapping(value = "/findall")
+    // public ResponseEntity<Map> findall(Model model) {
+    //     Map data = new HashMap<>();
+        
+    //     List<SistemInformasi> dataPaging = sistem_informasi_repository.findAll(Sort.by(Sort.Direction.ASC, "updated_at"));
+
+    //     data.put("data", dataPaging);
+    //     return new ResponseEntity<>(data, HttpStatus.OK);
+    // }
+
+    @PutMapping(value = "/editmateri")
+    public ResponseEntity<Map> editmateri(@RequestParam(required = false) String nama, @RequestParam(required = false) String deskripsi, 
+                                        @RequestParam(required = false) String kategori, @RequestParam(required = true) Integer id) {
+        Map data = new HashMap<>();
+        Date date = new Date();
+        if (!sistem_informasi_repository.existsById(id)) {
+            data.put("message", "Data Tidak Ditemukan");
+            return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
+        }
+        SistemInformasi simasi = new SistemInformasi();
+
+        simasi.setNama(nama);
+        simasi.setUpdatedAt(date);
+        simasi.setDeskripsi(deskripsi);
+        simasi.setKategori(kategori);
+        sistem_informasi_repository.save(simasi);
+        
+        data.put("icon", "success");
+        data.put("message", "data berhasil di Edit");
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "/delete")
+    public ResponseEntity<Map> editDraft(@RequestParam(required = true) Integer id) {
+        Map data = new HashMap<>();
+        if (!sistem_informasi_repository.existsById(id)) {
+            data.put("message", "Data Tidak Ditemukan");
+            return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
+        }
+        sistem_informasi_repository.deleteById(id);
+      
+        data.put("icon", "success");
+        data.put("message", "Data Berhasil di hapus");
+        return new ResponseEntity<>(data, HttpStatus.OK);
+    }  
+
 }
