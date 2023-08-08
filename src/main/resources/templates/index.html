@@ -34,13 +34,113 @@
     </nav>
 
     <div class="container justify-content-center">
-        <div class="row m-3">
-            <div th:each="data : ${data}" class="card" style="width: 18rem; margin: 3px;">
-                <div class="card-body">
-                    <img th:src="@{/streamImage(filename=${data.filename})}" style="width: 200px; height:100px; object-fit: cover;">
-                    <h5 th:text="${data.nama}" class="card-title"></h5>
-                    <p th:text="${data.kategori}"></p>
-                    <p th:text="${data.deskripsi}"></p>
+        <div class="input-group">
+            <input id="searchData" type="text" class="form-control" placeholder="Search">
+            <button type="button" class="btn btn-outline-primary" style="margin-left: 3px;" data-bs-toggle="modal"
+                data-bs-target="#modalTambah">TAMBAH DATA</button>
+        </div>
+        <div class="row">
+            <div th:each="data : ${data}" class="col-lg-3 col-md-4 col-sm-6">
+                <div class="card-container" data-bs-toggle="modal" data-bs-target="#modalDetail"
+                    th:onclick="'findbyid(' + ${data.id} + ')'">
+                    <div class="card mt-3" style="width: 18rem; border-radius: 10%;">
+                        <div class="card-body">
+                            <img th:src="@{/streamImage(filename=${data.filename})}"
+                                style="width: 200px; height:100px; object-fit: cover;">
+                            <h5 th:text="${data.nama}" class="card-title"></h5>
+                            <p th:text="${data.kategori}" class="kategori"></p>
+                            <p th:text="${data.deskripsi}"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalTambah" tabindex="-1" aria-hidden="true" style="backdrop-filter: blur(10px);">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">INPUT DATA MATERI</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formMateri" action="#" enctype="multipart/form-data">
+                        <div class="card-body">
+                            <div class="form-floating mb-3">
+                                <input type="text" id="nama" class="form-control" required="true" placeholder="nama" />
+                                <label for="nama">Nama Barang</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="Kategori" name="Kategori"
+                                    placeholder="Kategori" value="" />
+                                <label for="Kategori">Kategori</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="Harga" name="Harga" placeholder="Harga"
+                                    value="" />
+                                <label for="Harga">Harga</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="Deskripsi" name="Deskripsi"
+                                    placeholder="Deskripsi" value="" />
+                                <label for="Deskripsi">Deskripsi</label>
+                            </div>
+                            <div class="form-group file_container mb-3">
+                                <h5 for="file" class="form-label">Upload Files</h5>
+                                <input type="file" class="form-control" name="file" id="filee" accept="image/*" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="nambah" onclick="nambahedit()" class="btn btn-primary">
+                        Simpan Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade vh-100" id="modalDetail" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg d-flex justify-content-center">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detail Materi</h5>
+                    <button type="button btn-close" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="#" id="modalDetailForm">
+                        <div class="d-flex justify-content-center">
+                            <img class="videoDetail" id="tempatprev" style="width: 200px; height:100px" src="" />
+                        </div>
+                        <div class="form-group">
+                            <label for="detailJudul">Nama Barang</label>
+                            <input type="text" class="form-control" id="detailJudul"
+                                style="border: none; text-transform: uppercase;" />
+                        </div>
+                        <div class="form-group">
+                            <div class="row">
+                                <div class="col">
+                                    <label for="detailTimLiputan">Kategori</label>
+                                    <input type="text" class="form-control" id="kategoris"
+                                        style="border: none;" />
+                                </div>
+                                <div class="col">
+                                    <label for="detailReporter">Harga</label>
+                                    <input type="text" class="form-control" id="hargabar" style="border: none;" />
+                                </div>
+                                <div class="col">
+                                    <label for="detailLokasiLiputan">Deksripsi</label>
+                                    <input type="text" class="form-control" id="deksripsis"
+                                        style="border: none;" />
+                                </div>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -68,9 +168,91 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         $(document).ready(function () {
-
+            $("#searchData").keyup(function () {
+                var searchText = $(this).val().toLowerCase();
+                $(".card-container").each(function () {
+                    var cardTitle = $(this).find(".card-title").text().toLowerCase();
+                    var cat = $(this).find(".kategori").text().toLowerCase();
+                    if (cardTitle.includes(searchText) || cat.includes(searchText)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
         });
 
+        function nambahedit() {
+            var bodyFormData = new FormData();
+            var inputFile = document.getElementsByName("file");
+            listVideo = [];
+
+            for (var i = 0; i < inputFile.length; i++) {
+                var a = inputFile[i].files[0];
+                listVideo.push(a);
+            }
+            listVideo.forEach(video => {
+                bodyFormData.append("files", listVideo);
+            });
+
+            var url = `/post?nama=${$("#nama"
+            ).val()}&deskripsi=${$("#Deskripsi").val()}&harga=${$(
+                "#Harga"
+            ).val()}&kategori=${$("#Kategori").val()}`;
+
+            Swal.fire({
+                title: 'Please wait...',
+                html: 'Uploading file',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                },
+            })
+            axios({
+                method: "post",
+                url: url,
+                data: bodyFormData,
+                headers: { "Content-Type": "multipart/form-data" },
+            })
+                .then(function (response) {
+                    Swal.fire({
+                        position: "center",
+                        icon: response.data.icon,
+                        title: response.data.message,
+                        showConfirmButton: true,
+                        confirmButtonColor: '#198754'
+                    }).then((result) => {
+
+                        location.reload();
+
+                    });
+                })
+                .catch(function (obj) {
+                    Swal.fire({
+                        position: "center",
+                        icon: obj.response.data.icon,
+                        title: obj.response.data.message,
+                        showConfirmButton: true,
+                        confirmButtonColor: '#198754'
+                    }).then((result) => {
+
+                        location.reload();
+
+                    });
+                })
+        };
+
+        function findbyid(id) {
+            $.get(`/find?id=${id}`, function (datas) {
+                var si = datas.data;
+                $("#tempatprev source").attr("src",`/streamImage?filename=${si.filename}`);
+                $("#detailJudul").val(si.nama);
+                $("#kategoris").val(si.kategori);
+                $("#hargabar").val(si.harga);
+                $("#deksripsis").val(si.deskripsi);
+            })
+        }
 
         /*]]>*/
     </script>
