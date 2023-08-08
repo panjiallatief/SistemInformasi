@@ -1,0 +1,66 @@
+spring:
+   profiles:
+      active: panji
+---
+spring:
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  config:
+    activate:
+      on-profile: panji
+  application:
+    name: Panji
+  datasource:
+      url: jdbc:postgresql://localhost:5432/sistem_informasi
+      username: postgres
+      password: 123456
+      driverClassName: org.postgresql.Driver
+  jpa: 
+      database: postgresql
+      hibernate: 
+         dialect: org.hibernate.dialect.PostgreSQL10Dialect
+         ddl-auto: update
+      # show-sql: true
+      # open-in-view: false
+      # generate-ddl: true
+  thymeleaf:
+    cache: false
+    mode: HTML
+    encoding: UTF-8
+    prefix: classpath:/templates/
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
+  web:
+    resources:
+      static-locations: classpath:/static/
+      cache:
+        period: 0
+server:
+  port: 8085
+  maxHttpHeaderSize: 100000
+  error:
+    whitelabel:
+      enabled: false
+    path: /error
+# URL:
+#   FILE_IN: C:\\video
+#   FILE_PRIEVIEW: C:\\video
+#   DOWNLOAD_HI_RES: C:\\video
+#   DOWNLOAD_LOW_RES: C:\\video
+URL:
+  FILE_IN: D:\\data_ingest\\original
+  FILE_IN_IMAGE: D:\\data_ingest\\image
+  FILE_PRIEVIEW: D:\\data_ingest\\lowres\\
+  FILE_PRIEVIEW_Image: D:\\data_ingest\\image
+  
+EXTENSION:
+  FILE_DOWNLOAD: 
+FTP:
+  REMOTE_HOST: 192.168.10.243
+  USERNAME: amberfin
+  PASSWORD: 123amberfin
+---
