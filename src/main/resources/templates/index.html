@@ -33,15 +33,15 @@
                 th:src="@{/images/BTV.svg}" alt="" style="width: 80px; margin:auto 20px" /></a>
     </nav>
 
-    <div  th:each="data:${data}" class="container justify-content-center">
-        <div class="card" style="width: 18rem;">
-            <img class="card-img-top" src="..." alt="Card image cap">
-            <div class="card-body">
-              <h5 class="card-title" th:text="${data.nama}"></h5>
-              <p th:text="${data.deskripsi}" class="card-text"></p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-          </div>
+    <div class="container justify-content-center">
+        <div class="container">
+            <div th:each="data : ${data}" class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 th:text="${data.nama}" class="card-title"></h5>
+                    <p th:text="${data.kategori}"></p>
+                    <p th:text="${data.deskripsi}"></p>
+                </div>
+        </div>
     </div>
 
 
