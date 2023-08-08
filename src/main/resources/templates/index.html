@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="shortcut icon" sizes="16x16" th:href="@{/images/BTV.ico}" />
-  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
 
     <!-- bootstrap -->
     <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css}" rel="stylesheet"
@@ -29,31 +29,51 @@
 <body style="background-color: #efefef">
     <nav class="navbar navbar-expand-lg"
         th:style="'background-image:url('+@{/images/images2.png}+');background-size:cover;'">
-
-
         <a class="navbar-brand" href="#!" th:if="${session.work == 'BTV'}"><img class="img-fluid"
                 th:src="@{/images/BTV.svg}" alt="" style="width: 80px; margin:auto 20px" /></a>
     </nav>
 
     <div class="container justify-content-center">
-        <div class="row">
-            <div class="report-container" id="tabRecent">
-                <div class="report-header">
-                  <h1 class="recent-Articles">Recent</h1>
-                  <div class="col text-right">
-                    <a type="button" class="btn btn-outline-info" id="checkin" data-toggle="modal"
+
+        <div class="report-container">
+            <div class="report-header mb-3">
+                <h1 class="recent-Articles">Recent</h1>
+                <div class="col text-right">
+                    <!-- <a type="button" class="btn btn-outline-info" id="checkin" data-toggle="modal"
                       data-target="#modalCheckin">Form Check-in</a>
-                    <a type="button" class="btn btn-outline-danger" id="checkout">Form Check-out</a>
-                  </div>
+                    <a type="button" class="btn btn-outline-danger" id="checkout">Form Check-out</a> -->
                 </div>
-                <div class="report-body">
-                  
-        
+            </div>
+            <div id="carouselExampleControls" class="carousel carousel-dark slide" data-bs-ride="carousel"
+                data-bs-interval="false">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="card-wrapper container-sm d-flex  justify-content-around">
+                            <div th:each="datas:${data}" class="card  " style="width: 18rem;">
+                                <!-- <img src="" class="card-img-top"> -->
+                                <div class="card-body">
+                                    <h5 th:text="${datas.nama}" class="card-title"></h5>
+                                    <a th:text="${datas.kategori}"></a>
+                                    <a th:text="${datas.deskripsi}"></a>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
-              </div>
+            </div>
         </div>
-        
-    </div>
+
     </div>
 
 
@@ -82,12 +102,12 @@
     <script th:inline="javascript">
         /*<![CDATA[*/
         $(document).ready(function () {
-          
+
 
         });
 
-        
-    /*]]>*/
+
+        /*]]>*/
     </script>
 </body>
 
