@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
@@ -43,10 +44,9 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-
 @Controller
 public class Sistem_Informasi_Controller {
-    
+
     @Autowired
     private Sistem_Informasi_Repository sistem_informasi_repository;
 
@@ -64,11 +64,11 @@ public class Sistem_Informasi_Controller {
     }
 
     @GetMapping(value = "/streamImage")
-    public StreamingResponseBody handleRequest (@RequestParam String filename, HttpServletResponse response) {
-    response.setContentType("image/jpeg");
+    public StreamingResponseBody handleRequest(@RequestParam String filename, HttpServletResponse response) {
+        response.setContentType("image/jpeg");
 
         return new StreamingResponseBody() {
-            public void writeTo (OutputStream out) throws IOException {
+            public void writeTo(OutputStream out) throws IOException {
                 File Image = new File(env.getProperty("URL.FILE_PRIEVIEW_Image") + "/" + filename);
 
                 try {
@@ -84,23 +84,32 @@ public class Sistem_Informasi_Controller {
     @RequestMapping(value = "/post", consumes = {
             MediaType.MULTIPART_FORM_DATA_VALUE }, produces = APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Map> post(@RequestParam String nama, @RequestParam String deskripsi, @RequestParam String kategori, @RequestParam(required = false) MultipartFile files){
+    public ResponseEntity<Map> post(@RequestParam String nama, @RequestParam String deskripsi,
+            @RequestParam String harga, @RequestParam String kategori,
+            @RequestPart(value = "files", required = false) MultipartFile files) throws JsonProcessingException{
         Map data = new HashMap<>();
 
         String namafile = "";
         Date date = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
         String ddMMyyyy = sdf.format(new Date());
+        String arrSplit[] = files.getOriginalFilename().split("\\.");
+        String originalExtension = arrSplit[arrSplit.length - 1];
 
         SistemInformasi simasi = new SistemInformasi();
-        namafile = ddMMyyyy + "_" + nama + "_" + kategori + simasi.getId().toString();
 
         simasi.setNama(nama);
         simasi.setUpdatedAt(date);
         simasi.setDeskripsi(deskripsi);
         simasi.setKategori(kategori);
         simasi.setFilename(namafile);
+        simasi.setHarga(harga);
         sistem_informasi_repository.save(simasi);
+
+        SistemInformasi dataa = sistem_informasi_repository.findById(simasi.getId()).get();
+        namafile = ddMMyyyy + "_" + nama + "_" + kategori + "_" + simasi.getId().toString() + "." + originalExtension;
+        dataa.setFilename(namafile);
+        sistem_informasi_repository.save(dataa);
 
         try {
             files.transferTo(new File(env.getProperty("URL.FILE_IN_IMAGE") + "/" + namafile));
@@ -118,23 +127,23 @@ public class Sistem_Informasi_Controller {
     }
 
     @GetMapping(value = "/find")
-    public ResponseEntity<Map> find(@RequestParam(required = true) Integer id,
-                                    @RequestParam(required = false) String filename) throws JsonProcessingException {
+    public ResponseEntity<Map> find(@RequestParam(required = true) Integer id){
         Map data = new HashMap<>();
 
-            if (!sistem_informasi_repository.existsById(id)) {
-                data.put("message", "Data Tidak Ditemukan");
-                return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
-            }
-            SistemInformasi dataa = sistem_informasi_repository.findById(id).get();
-            data.put("data", dataa);
-            return new ResponseEntity<>(data, HttpStatus.OK);
-
+        if (!sistem_informasi_repository.existsById(id)) {
+            data.put("message", "Data Tidak Ditemukan");
+            return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
         }
+        SistemInformasi dataa = sistem_informasi_repository.findById(id).get();
+        data.put("data", dataa);
+        return new ResponseEntity<>(data, HttpStatus.OK);
+
+    }
 
     @PutMapping(value = "/editmateri")
-    public ResponseEntity<Map> editmateri(@RequestParam(required = false) String nama, @RequestParam(required = false) String deskripsi, 
-                                        @RequestParam(required = false) String kategori, @RequestParam(required = true) Integer id) {
+    public ResponseEntity<Map> editmateri(@RequestParam(required = false) String nama,
+            @RequestParam(required = false) String deskripsi,
+            @RequestParam(required = false) String kategori, @RequestParam(required = true) Integer id) {
         Map data = new HashMap<>();
         Date date = new Date();
         if (!sistem_informasi_repository.existsById(id)) {
@@ -148,7 +157,7 @@ public class Sistem_Informasi_Controller {
         simasi.setDeskripsi(deskripsi);
         simasi.setKategori(kategori);
         sistem_informasi_repository.save(simasi);
-        
+
         data.put("icon", "success");
         data.put("message", "data berhasil di Edit");
         return new ResponseEntity<>(data, HttpStatus.OK);
@@ -162,10 +171,10 @@ public class Sistem_Informasi_Controller {
             return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
         }
         sistem_informasi_repository.deleteById(id);
-      
+
         data.put("icon", "success");
         data.put("message", "Data Berhasil di hapus");
         return new ResponseEntity<>(data, HttpStatus.OK);
-    }  
+    }
 
 }

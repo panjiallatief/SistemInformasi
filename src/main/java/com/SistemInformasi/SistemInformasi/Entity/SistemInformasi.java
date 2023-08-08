@@ -44,4 +44,7 @@ public class SistemInformasi extends DateAudit {
     @Column(name = "kategori")  
     private String kategori;
 
+    @Column(name = "harga")  
+    private String harga;
+
 }
