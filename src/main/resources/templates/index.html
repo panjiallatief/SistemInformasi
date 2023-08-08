@@ -88,7 +88,7 @@
                             </div>
                             <div class="form-group file_container mb-3">
                                 <h5 for="file" class="form-label">Upload Files</h5>
-                                <input type="file" class="form-control" name="file" id="filee" accept="image/*" />
+                                <input type="file" class="form-control" name="file[]" id="filee" accept="image/*" />
                             </div>
                         </div>
                     </form>
@@ -184,7 +184,7 @@
 
         function nambahedit() {
             var bodyFormData = new FormData();
-            var inputFile = document.getElementsByName("file");
+            var inputFile = document.getElementsByName("file[]");
             listVideo = [];
 
             for (var i = 0; i < inputFile.length; i++) {
@@ -224,7 +224,7 @@
                         confirmButtonColor: '#198754'
                     }).then((result) => {
 
-                        location.reload();
+                        // location.reload();
 
                     });
                 })
@@ -237,7 +237,7 @@
                         confirmButtonColor: '#198754'
                     }).then((result) => {
 
-                        location.reload();
+                        // location.reload();
 
                     });
                 })
