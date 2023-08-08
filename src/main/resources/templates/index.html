@@ -1,11 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" sizes="16x16" th:href="@{/images/BTV.ico}" />
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
+
+    <!-- bootstrap -->
+    <link th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css}" rel="stylesheet"
+        integrity="sha256-djO3wMl9GeaC/u6K+ic4Uj/LKhRUSlUFcsruzS7v5ms=" crossorigin="anonymous"
+        referrerpolicy="no-referrer">
+    <!-- font-awesome -->
+    <link rel="stylesheet" th:href="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css}"
+        integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0" crossorigin="anonymous">
+    <!-- dataTable -->
+    <link rel="stylesheet" th:href="@{https://cdn.datatables.net/1.13.5/css/dataTables.bootstrap5.min.css}"
+        integrity="sha256-4W/j2Pv3N5VfbVDhzI8SKzHFHBfaOdZ2CZ1lXfxNofU=" crossorigin="anonymous"
+        referrerpolicy="no-referrer">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.18/dist/sweetalert2.min.css"
+        integrity="sha256-7jUS+MWeqkFdmW9ozkZ7mPagz+QmMbsBlt+Q3MsE+FU=" crossorigin="anonymous">
+
+    <title>ASSET INFORMATION - B-Universe</title>
 </head>
-<body>
-    <H1>TEST</H1>
+
+<body style="background-color: #efefef">
+    <nav class="navbar navbar-expand-lg"
+        th:style="'background-image:url('+@{/images/images2.png}+');background-size:cover;'">
+
+
+        <a class="navbar-brand" href="#!" th:if="${session.work == 'BTV'}"><img class="img-fluid"
+                th:src="@{/images/BTV.svg}" alt="" style="width: 80px; margin:auto 20px" /></a>
+    </nav>
+
+    <div class="container justify-content-center">
+        <div class="row">
+            <div class="report-container" id="tabRecent">
+                <div class="report-header">
+                  <h1 class="recent-Articles">Recent</h1>
+                  <div class="col text-right">
+                    <a type="button" class="btn btn-outline-info" id="checkin" data-toggle="modal"
+                      data-target="#modalCheckin">Form Check-in</a>
+                    <a type="button" class="btn btn-outline-danger" id="checkout">Form Check-out</a>
+                  </div>
+                </div>
+                <div class="report-body">
+                  
+        
+                </div>
+              </div>
+        </div>
+        
+    </div>
+    </div>
+
+
+
+    <script th:src="@{https://code.jquery.com/jquery-3.7.0.js}"
+        integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js}"
+        integrity="sha256-WgfGn5Bh6xLjmgMTWKT1Z/MKACrWGCY5rIT9G9ovbmU=" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <script th:src="@{https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js}"
+        integrity="sha256-XDbijJp72GS2c+Ij234ZNJIyJ1Nv+9+HH1i28JuayMk=" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.18/dist/sweetalert2.all.min.js"
+        integrity="sha256-eYINpiFTsm812/hOBxFCGaSZzPvHBZZFYSe5ZWLgYzo=" crossorigin="anonymous"></script>
+    <script type="text/javascript" th:src="@{https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.0/axios.min.js}"
+        integrity="sha256-xJNTehIpC6/bk41FMzIkPAjeo8cYvnGnxbv/YgAM1og=" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js}"
+        integrity="sha384-Y7LSKwoY+C2iyfu/oupNnkGEN3EgA6skmJeVg5AyQk7ttcjX0XsLREmmuJW/SdbU"
+        crossorigin="anonymous"></script>
+    <script type="text/javascript" th:src="@{https://cdn.datatables.net/1.13.5/js/dataTables.bootstrap5.min.js}"
+        integrity="sha256-u2kP0BrkAUxorzBPuW9nh3TKCtaXXSD3VY6/gxvUJig=" crossorigin="anonymous"
+        referrerpolicy="no-referrer"></script>
+    <script type="text/javascript" th:src="@{/js/action.js}"></script>
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        $(document).ready(function () {
+          
+
+        });
+
+        
+    /*]]>*/
+    </script>
 </body>
+
 </html>
