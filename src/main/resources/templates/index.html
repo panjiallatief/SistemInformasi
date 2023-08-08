@@ -233,7 +233,7 @@
         function findbyid(id) {
             $.get(`/find?id=${id}`, function (datas) {
                 var si = datas.data;
-                $("#tempatprev source").attr("src", `/streamImage?filename=${si.filename}`);
+                $("#tempatprev").attr("src", `/streamImage?filename=${si.filename}`);
                 $("#detailJudul").val(si.nama);
                 $("#kategoris").val(si.kategori);
                 $("#hargabar").val(si.harga);
