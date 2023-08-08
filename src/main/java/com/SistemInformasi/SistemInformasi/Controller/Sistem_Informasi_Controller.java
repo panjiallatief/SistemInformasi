@@ -57,8 +57,9 @@ public class Sistem_Informasi_Controller {
 
     @GetMapping(value = "/")
     public String index(Model model) {
-        List<SistemInformasi> dataa = sistem_informasi_repository.findAll(Sort.by(Sort.Direction.ASC, "updated_at"));
+        List<SistemInformasi> dataa = sistem_informasi_repository.findAll(Sort.by(Sort.Direction.ASC, "updatedAt"));
         model.addAttribute("data", dataa);
+        System.out.println(dataa);
         return "index";
     }
 
