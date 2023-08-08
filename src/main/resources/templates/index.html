@@ -193,13 +193,10 @@
             }
             listVideo.forEach(video => {
                 bodyFormData.append("files", listVideo);
+                bodyFormData.append("files", video);
             });
 
-            var url = `/post?nama=${$("#nama"
-            ).val()}&deskripsi=${$("#Deskripsi").val()}&harga=${$(
-                "#Harga"
-            ).val()}&kategori=${$("#Kategori").val()}`;
-
+            var url = `/post?nama=${$("#nama").val()}&deskripsi=${$("#Deskripsi").val()}&harga=${$("#Harga").val()}&kategori=${$("#Kategori").val()}`;
             Swal.fire({
                 title: 'Please wait...',
                 html: 'Uploading file',
