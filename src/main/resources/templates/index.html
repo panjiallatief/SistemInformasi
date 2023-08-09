@@ -40,16 +40,17 @@
                 data-bs-target="#modalTambah">TAMBAH DATA</button>
         </div>
         <div class="row">
-            <div th:each="data : ${data}" class="col-lg-3 col-md-4 col-sm-6">
-                <div class="card-container" data-bs-toggle="modal" data-bs-target="#modalDetail"
+            <div th:each="data : ${data}" class="col-lg-3 col-md-4 col-sm-6 itemss" >
+                <div class="card-container " data-bs-toggle="modal" data-bs-target="#modalDetail"
                     th:onclick="'findbyid(' + ${data.id} + ')'">
-                    <div class="card mt-3" style="width: 18rem; border-radius: 10%;">
-                        <div class="card-body">
+                    <div class="card mt-3" style="border-radius: 10%;">
+                        <div class="card-body text-center">
                             <img th:src="@{/streamImage(filename=${data.filename})}"
-                                style="width: 200px; height:100px; object-fit: cover;">
+                                style="width: 100%; height:50%; object-fit: cover; border-top-left-radius: 10%; border-top-right-radius: 10%;">
                             <h5 th:text="${data.nama}" class="card-title"></h5>
                             <p th:text="${data.kategori}" class="kategori"></p>
                             <p th:text="${data.deskripsi}"></p>
+                            <p th:text="${data.harga}"></p>
                         </div>
                     </div>
                 </div>
@@ -102,47 +103,18 @@
         </div>
     </div>
 
+    <div id="modalDetail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDetail" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+              <div class="modal-body">
+                  <img class="img-responsive" id="tempatprev" src="" />
 
-    <div class="modal fade vh-100" id="modalDetail" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg d-flex justify-content-center">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Detail Materi</h5>
-                    <button type="button btn-close" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form action="#" id="modalDetailForm">
-                        <div class="d-flex justify-content-center">
-                            <img class="videoDetail" id="tempatprev" style="width: 200px; height:100px" src="" />
-                        </div>
-                        <div class="form-group">
-                            <label for="detailJudul">Nama Barang</label>
-                            <input type="text" class="form-control" id="detailJudul"
-                                style="border: none; text-transform: uppercase;" />
-                        </div>
-                        <div class="form-group">
-                            <div class="row">
-                                <div class="col">
-                                    <label for="detailTimLiputan">Kategori</label>
-                                    <input type="text" class="form-control" id="kategoris" style="border: none;" />
-                                </div>
-                                <div class="col">
-                                    <label for="detailReporter">Harga</label>
-                                    <input type="text" class="form-control" id="hargabar" style="border: none;" />
-                                </div>
-                                <div class="col">
-                                    <label for="detailLokasiLiputan">Deksripsi</label>
-                                    <input type="text" class="form-control" id="deksripsis" style="border: none;" />
-                                </div>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
+              </div>
+          </div>
         </div>
-    </div>
+      </div>
+
+    
 
 
 
@@ -163,18 +135,27 @@
     <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js}"
         integrity="sha384-Y7LSKwoY+C2iyfu/oupNnkGEN3EgA6skmJeVg5AyQk7ttcjX0XsLREmmuJW/SdbU"
         crossorigin="anonymous"></script>
+    <script th:src="@{https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js}"
+        integrity="sha384-vtH+5pZsjdWxaTWlFSCrWM6i0TIG0HKOqJbPo91LB35dvWpVzuWdJeVoNweP+eoY"
+        crossorigin="anonymous"></script>
     <script th:inline="javascript">
         /*<![CDATA[*/
         $(document).ready(function () {
+            var $grid = $('.row').isotope({
+                itemSelector: '.itemss',
+                layoutMode: 'fitRows'
+            });
+
+            // Search Input Event Listener
             $("#searchData").keyup(function () {
                 var searchText = $(this).val().toLowerCase();
-                $(".card-container").each(function () {
-                    var cardTitle = $(this).find(".card-title").text().toLowerCase();
-                    var cat = $(this).find(".kategori").text().toLowerCase();
-                    if (cardTitle.includes(searchText) || cat.includes(searchText)) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
+
+                // Filter the Isotope items based on the search text
+                $grid.isotope({
+                    filter: function () {
+                        var cardTitle = $(this).find(".card-title").text().toLowerCase();
+                        var cat = $(this).find(".kategori").text().toLowerCase();
+                        return searchText === "" || cardTitle.includes(searchText) || cat.includes(searchText);
                     }
                 });
             });
@@ -234,10 +215,10 @@
             $.get(`/find?id=${id}`, function (datas) {
                 var si = datas.data;
                 $("#tempatprev").attr("src", `/streamImage?filename=${si.filename}`);
-                $("#detailJudul").val(si.nama);
-                $("#kategoris").val(si.kategori);
-                $("#hargabar").val(si.harga);
-                $("#deksripsis").val(si.deskripsi);
+                // $("#detailJudul").val(si.nama);
+                // $("#kategoris").val(si.kategori);
+                // $("#hargabar").val(si.harga);
+                // $("#deksripsis").val(si.deskripsi);
             })
         }
 
