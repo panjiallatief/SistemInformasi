@@ -395,7 +395,7 @@
 
         function editaja(id) {
             var bodyFormData = new FormData();
-            var inputFile = document.getElementsByName("files")[0]; // Assuming you have only one input for the file
+            var inputFile = document.getElementsByName("filese")[0]; // Assuming you have only one input for the file
             var dd = $("#iddata").val();
 
             bodyFormData.append("files", inputFile.files[0]);
@@ -424,7 +424,7 @@
                         showConfirmButton: true,
                         confirmButtonColor: '#198754'
                     }).then((result) => {
-                        deleteafter(dd);
+                        // deleteafter(dd);
                         location.reload();
 
                     });
@@ -437,7 +437,7 @@
                         showConfirmButton: true,
                         confirmButtonColor: '#198754'
                     }).then((result) => {
-                        deleteafter(dd);
+                        // deleteafter(dd);
 
                         location.reload();
 

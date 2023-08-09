@@ -65,23 +65,23 @@ public class Sistem_Informasi_Controller {
 
     @GetMapping(value = "/")
     public String index(Model model) {
-        List<SistemInformasi> dataa = sistem_informasi_repository.findAll(Sort.by(Sort.Direction.ASC, "updatedAt"));        
-        model.addAttribute("data", dataa);       
+        List<SistemInformasi> dataa = sistem_informasi_repository.findAll(Sort.by(Sort.Direction.ASC, "updatedAt"));
+        model.addAttribute("data", dataa);
         List<Kategori> kateg = kategori_Repository.findAll();
-        model.addAttribute("kategori", kateg); 
+        model.addAttribute("kategori", kateg);
 
         return "index";
     }
 
     @GetMapping(value = "/admin")
-    public String admin(Model model){
-        List<SistemInformasi> dataa = sistem_informasi_repository.findAll(Sort.by(Sort.Direction.ASC, "updatedAt"));        
-        model.addAttribute("data", dataa);       
+    public String admin(Model model) {
+        List<SistemInformasi> dataa = sistem_informasi_repository.findAll(Sort.by(Sort.Direction.ASC, "updatedAt"));
+        model.addAttribute("data", dataa);
         List<Kategori> kateg = kategori_Repository.findAll();
-        model.addAttribute("kategori", kateg); 
+        model.addAttribute("kategori", kateg);
+
         return "admin";
     }
-
 
     @GetMapping(value = "/streamImage")
     public StreamingResponseBody handleRequest(@RequestParam String filename, HttpServletResponse response) {
@@ -183,25 +183,38 @@ public class Sistem_Informasi_Controller {
 
     }
 
-    @PutMapping(value = "/editmateri")
+    @RequestMapping(value = "/editmateri", consumes = {
+            MediaType.MULTIPART_FORM_DATA_VALUE }, produces = APPLICATION_JSON_VALUE, method = RequestMethod.PUT)
+    @ResponseBody
     public ResponseEntity<Map> editmateri(@RequestParam(required = false) String nama,
             @RequestParam(required = false) String harga,
             @RequestParam(required = false) String deskripsi,
-            @RequestParam(required = false) String kategori, @RequestParam(required = true) Integer id) {
+            @RequestParam(required = false) String kategori, @RequestParam(required = true) Integer id,
+            @RequestParam String namafile,
+            @RequestPart(value = "files", required = false) MultipartFile files) throws JsonProcessingException {
+
         Map data = new HashMap<>();
         Date date = new Date();
         if (!sistem_informasi_repository.existsById(id)) {
             data.put("message", "Data Tidak Ditemukan");
             return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
         }
-        SistemInformasi simasi = new SistemInformasi();
 
+        SistemInformasi simasi = sistem_informasi_repository.getById(id);
         simasi.setNama(nama);
         simasi.setUpdatedAt(date);
         simasi.setDeskripsi(deskripsi);
         simasi.setKategori(kategori);
         simasi.setHarga(harga);
         sistem_informasi_repository.save(simasi);
+
+        System.out.println(namafile);
+
+        try {
+            files.transferTo(new File(env.getProperty("URL.FILE_IN_IMAGE") + "/" + namafile));
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
 
         data.put("icon", "success");
         data.put("message", "data berhasil di Edit");
@@ -223,24 +236,24 @@ public class Sistem_Informasi_Controller {
     }
 
     @PostMapping(value = "/Inputkategori")
-    public ResponseEntity<Map> Inputkategori(@RequestParam String nama){
-      Map data = new HashMap<>();
-      Date date = new Date();
+    public ResponseEntity<Map> Inputkategori(@RequestParam String nama) {
+        Map data = new HashMap<>();
+        Date date = new Date();
 
-      if(kategori_Repository.categoryboolean(nama)){
-        data.put("icon", "error");
-        data.put("message", "Nama Kategori Sudah Ada");
-        return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
-      }
+        if (kategori_Repository.categoryboolean(nama)) {
+            data.put("icon", "error");
+            data.put("message", "Nama Kategori Sudah Ada");
+            return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
+        }
 
-      Kategori category = new Kategori();
-      category.setNama_kategori(nama);
-      category.setUpdatedAt(date);
-      kategori_Repository.save(category);
+        Kategori category = new Kategori();
+        category.setNama_kategori(nama);
+        category.setUpdatedAt(date);
+        kategori_Repository.save(category);
 
-      data.put("icon", "success");
-      data.put("message", "Sukses Insert Kategori");
-      return new ResponseEntity<>(data, HttpStatus.OK);
+        data.put("icon", "success");
+        data.put("message", "Sukses Insert Kategori");
+        return new ResponseEntity<>(data, HttpStatus.OK);
 
     }
 
