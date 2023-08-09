@@ -130,6 +130,9 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    <div class="alert alert-info" role="alert">
+                        Fotonya Upload Lagi!
+                      </div>
                     <form id="formMateri" action="#" enctype="multipart/form-data">
                         <div class="card-body">
                             <div class="form-floating mb-3">
@@ -391,6 +394,7 @@
         function editaja(id) {
             var bodyFormData = new FormData();
             var inputFile = document.getElementsByName("files")[0]; // Assuming you have only one input for the file
+            var dd = $("#iddata").val();
 
             bodyFormData.append("files", inputFile.files[0]);
 
@@ -418,7 +422,7 @@
                         showConfirmButton: true,
                         confirmButtonColor: '#198754'
                     }).then((result) => {
-
+                        deleteafter(dd);
                         location.reload();
 
                     });
@@ -431,6 +435,7 @@
                         showConfirmButton: true,
                         confirmButtonColor: '#198754'
                     }).then((result) => {
+                        deleteafter(dd);
 
                         location.reload();
 
@@ -467,6 +472,12 @@
             });
         }
 
+        function deleteafter(id) {
+            $.ajax({
+                url: `/delete?id=${id}`,
+                method: "delete",
+            });
+        }
 
         /*]]>*/
     </script>
