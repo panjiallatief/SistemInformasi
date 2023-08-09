@@ -27,11 +27,11 @@
 </head>
 
 <body style="background-color: #efefef">
-    <nav class="navbar navbar-expand-lg"
+    <!-- <nav class="navbar navbar-expand-lg"
         th:style="'background-image:url('+@{/images/images2.png}+');background-size:cover;'">
         <a class="navbar-brand" href="#!" th:if="${session.work == 'BTV'}"><img class="img-fluid"
                 th:src="@{/images/BTV.svg}" alt="" style="width: 80px; margin:auto 20px" /></a>
-    </nav>
+    </nav> -->
 
     <div class="container justify-content-center">
         <div class="input-group">
@@ -39,8 +39,17 @@
             <button type="button" class="btn btn-outline-primary" style="margin-left: 3px;" data-bs-toggle="modal"
                 data-bs-target="#modalTambah">TAMBAH DATA</button>
         </div>
+        <div class="row text-center pt-3 mb-5" style="width: 100%;">
+            <div id="filters" class="filters">
+                <a type="button" data-filter="*" style="border-radius: 50px;"
+                    class="btn btn-outline-primary active">All</a>
+                <a th:each="datak : ${kategori}" type="button" class="btn btn-outline-primary"
+                    style="border-radius: 50px;" th:data-filter=".kategori'+${datak.id}+'"
+                    th:text="${datak.nama_kategori}"></a>
+            </div>
+        </div>
         <div class="row">
-            <div th:each="data : ${data}" class="col-lg-3 col-md-4 col-sm-6 itemss" >
+            <div th:each="data : ${data}" class="col-lg-3 col-md-4 col-sm-6 itemss">
                 <div class="card-container " data-bs-toggle="modal" data-bs-target="#modalDetail"
                     th:onclick="'findbyid(' + ${data.id} + ')'">
                     <div class="card mt-3" style="border-radius: 10%;">
@@ -48,9 +57,9 @@
                             <img th:src="@{/streamImage(filename=${data.filename})}"
                                 style="width: 100%; height:200px; object-fit: cover; border-top-left-radius: 10%; border-top-right-radius: 10%;">
                             <h5 th:text="${data.nama}" class="card-title"></h5>
-                            <p th:text="${data.kategori}" class="kategori"></p>
+                            <p th:text="${data.kategori}" th:class="'kategori'+${kategori.id}+''"></p>
                             <p th:text="${data.deskripsi}"></p>
-                            <p th:text="${data.harga}"></p>
+                            <!-- <p th:text="${data.harga}"></p> -->
                         </div>
                     </div>
                 </div>
@@ -73,12 +82,12 @@
                                 <label for="nama">Nama Barang</label>
                             </div>
                             <div class="form-floating mb-3">
-                                    <select type='text' id='Kategori' class='form-control'>
-                                      <option value='' selected disabled>--Kategori Divisi--</option>
-                                      <option value="IT Broadcast">IT Broadcast</option>
-                                      <option value="NOC/MCR">NOC/MCR</option>
-                                      <option value="IT Office">IT Office</option>
-                                    </select>
+                                <select type='text' id='Kategori' class='form-control'>
+                                    <option value='' selected disabled>--Kategori Divisi--</option>
+                                    <option th:each="cat : ${kategori}" th:id="${cat.kategori}"
+                                        th:value="${cat.kategori}" th:text="${cat.kategori}"></option>
+                                    <option value="tambahOwn">Tambah Kategori Divisi</option>
+                                </select>
                                 <label for="Kategori">Kategori</label>
                             </div>
                             <div class="form-floating mb-3">
@@ -107,17 +116,54 @@
         </div>
     </div>
 
-    <div id="modalDetail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDetail" aria-hidden="true" style="backdrop-filter: blur(10px);">
+    <div id="modalDetail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDetail"
+        aria-hidden="true" style="backdrop-filter: blur(10px);">
         <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
-          <div class="modal-content">
-              <!-- <div class="modal-body"> -->
-                  <img class="img-responsive" id="tempatprev" src="" />
-              <!-- </div> -->
-          </div>
+            <div class="modal-content">
+                <!-- <div class="modal-body"> -->
+                <img class="img-responsive" id="tempatprev" src="" />
+                <!-- </div> -->
+            </div>
         </div>
-      </div>
+    </div>
 
-    
+    <div class="modal fade" id="modalOwn" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg vh-100">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Tambah Owner</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="tab-pane fade show active" id="ex3-tabs-1" role="tabpanel" aria-labelledby="ex3-tab-1">
+                        <form id="formOwn" action="#" enctype="multipart/form-data">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <!-- <input type="text" name="iduser" id="iduser" class="form-control" hidden /> -->
+                                    <label>Masukan Nama Owner</label>
+                                    <div class="input-group mb-3">
+                                        <input type="text" id="nmOwner" class="form-control"
+                                            placeholder="Masukan Kategori Divisi" required />
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-center">
+                                    <button type="button" id="simpanOwner" class="btn btn-primary"
+                                        onclick="nambahOwner()">
+                                        Simpan Data
+                                    </button>
+                                </div>
+                            </div>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
 
 
@@ -157,12 +203,49 @@
                 $grid.isotope({
                     filter: function () {
                         var cardTitle = $(this).find(".card-title").text().toLowerCase();
-                        var cat = $(this).find(".kategori").text().toLowerCase();
-                        return searchText === "" || cardTitle.includes(searchText) || cat.includes(searchText);
+                        // var cat = $(this).find(".kategori").text().toLowerCase();
+                        return searchText === "" || cardTitle.includes(searchText);
                     }
                 });
             });
         });
+
+        $('#Kategori').change(function () {
+            var opval = $(this).val();
+            if (opval == "tambahOwn") {
+                $('#modalOwn').modal("show");
+            }
+        });
+
+        //kategori
+        function nambahOwner() {
+            var url = `/Inputkategori?nama=${$("#nmOwner").val()}`;
+            axios({
+                method: "post",
+                url: url,
+                headers: { "Content-Type": "multipart/form-data" },
+            })
+                .then(function (response) {
+                    Swal.fire({
+                        position: "center",
+                        icon: response.data.icon,
+                        title: response.data.message,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    }).then((result) => {
+                    });
+                })
+                .catch(function (obj) {
+                    Swal.fire({
+                        position: "center",
+                        icon: obj.response.data.icon,
+                        title: obj.response.data.message,
+                        showConfirmButton: false,
+                        timer: 1500,
+                    }).then((result) => {
+                    });
+                });
+        };
 
         function nambahedit() {
             var bodyFormData = new FormData();
