@@ -14,4 +14,9 @@ public interface Sistem_Informasi_Repository extends JpaRepository<SistemInforma
         nativeQuery = true)
     List<SistemInformasi> showall(String search);
 
+    @Query(value = "SELECT * FROM sistem_informasi WHERE kategori = ?1",
+        countQuery = "SELECT count(*) FROM sistem_informasi WHERE kategori = ?1",
+        nativeQuery = true)
+    List<SistemInformasi> showkategori(String katgeori);
+
 }

@@ -63,6 +63,13 @@ public class Sistem_Informasi_Controller {
         return "index";
     }
 
+    @GetMapping(value = "/findkategori")
+    public String findkategori(Model model, @RequestParam String kategori) {
+        List<SistemInformasi> dataa = sistem_informasi_repository.showkategori(kategori);
+        model.addAttribute("data", dataa);
+        return "index";
+    }
+
     @GetMapping(value = "/streamImage")
     public StreamingResponseBody handleRequest(@RequestParam String filename, HttpServletResponse response) {
         response.setContentType("image/jpeg");
@@ -86,7 +93,7 @@ public class Sistem_Informasi_Controller {
     @ResponseBody
     public ResponseEntity<Map> post(@RequestParam String nama, @RequestParam String deskripsi,
             @RequestParam String harga, @RequestParam String kategori,
-            @RequestPart(value = "files", required = false) MultipartFile files) throws JsonProcessingException{
+            @RequestPart(value = "files", required = false) MultipartFile files) throws JsonProcessingException {
         Map data = new HashMap<>();
 
         String namafile = "";
@@ -98,21 +105,44 @@ public class Sistem_Informasi_Controller {
 
         SistemInformasi simasi = new SistemInformasi();
 
-        simasi.setNama(nama);
         simasi.setUpdatedAt(date);
-        simasi.setDeskripsi(deskripsi);
-        simasi.setKategori(kategori);
-        simasi.setFilename(namafile);
-        simasi.setHarga(harga);
+
+        if (nama.equals("")) {
+            simasi.setNama("-");
+        } else {
+            simasi.setNama(nama);
+        }
+
+        if (deskripsi.equals("")) {
+            simasi.setDeskripsi("-");
+        } else {
+            simasi.setDeskripsi(deskripsi);
+        }
+
+        if (kategori.equals("")) {
+            simasi.setKategori("-");
+        } else {
+            simasi.setKategori(kategori);
+        }
+
+        if (harga.equals("")) {
+            simasi.setHarga("-");
+        } else {
+            simasi.setHarga(harga);
+        }
+
         sistem_informasi_repository.save(simasi);
 
         SistemInformasi dataa = sistem_informasi_repository.findById(simasi.getId()).get();
         namafile = ddMMyyyy + "_" + nama + "_" + kategori + "_" + simasi.getId().toString() + "." + originalExtension;
-        dataa.setFilename(namafile);
+        String space = namafile.replace(" ", "");
+        String namafilee = space;
+
+        dataa.setFilename(namafilee);
         sistem_informasi_repository.save(dataa);
 
         try {
-            files.transferTo(new File(env.getProperty("URL.FILE_IN_IMAGE") + "/" + namafile));
+            files.transferTo(new File(env.getProperty("URL.FILE_IN_IMAGE") + "/" + namafilee));
             Media media = new Media();
             media.setFilename(namafile);
             mediarepository.save(media);
@@ -127,7 +157,7 @@ public class Sistem_Informasi_Controller {
     }
 
     @GetMapping(value = "/find")
-    public ResponseEntity<Map> find(@RequestParam(required = true) Integer id){
+    public ResponseEntity<Map> find(@RequestParam(required = true) Integer id) {
         Map data = new HashMap<>();
 
         if (!sistem_informasi_repository.existsById(id)) {
@@ -142,6 +172,7 @@ public class Sistem_Informasi_Controller {
 
     @PutMapping(value = "/editmateri")
     public ResponseEntity<Map> editmateri(@RequestParam(required = false) String nama,
+            @RequestParam(required = false) String harga,
             @RequestParam(required = false) String deskripsi,
             @RequestParam(required = false) String kategori, @RequestParam(required = true) Integer id) {
         Map data = new HashMap<>();
@@ -156,6 +187,7 @@ public class Sistem_Informasi_Controller {
         simasi.setUpdatedAt(date);
         simasi.setDeskripsi(deskripsi);
         simasi.setKategori(kategori);
+        simasi.setHarga(harga);
         sistem_informasi_repository.save(simasi);
 
         data.put("icon", "success");
