@@ -33,7 +33,7 @@
                 th:src="@{/images/BTV.svg}" alt="" style="width: 80px; margin:auto 20px" /></a>
     </nav> -->
 
-    <div class="container justify-content-center">
+    <div class="container justify-content-center mt-5">
         <div class="input-group">
             <input id="searchData" type="text" class="form-control" placeholder="Search">
             <button type="button" class="btn btn-outline-primary" style="margin-left: 3px;" data-bs-toggle="modal"
@@ -41,11 +41,11 @@
         </div>
         <div class="row text-center pt-3 mb-5" style="width: 100%;">
             <div id="filters" class="filters">
-                <a type="button" data-filter="*" style="border-radius: 50px;"
-                    class="btn btn-outline-primary active">All</a>
-                <a th:each="datak : ${kategori}" type="button" class="btn btn-outline-primary"
-                    style="border-radius: 50px;" th:data-filter=".kategori'+${datak.id_kategori}+'"
-                    th:text="${datak.nama_kategori}"></a>
+                <a type="button" data-filter="" style="border-radius: 50px;"
+                    class="btn btn-outline-primary pil active">All</a>
+                <a th:each="datak : ${kategori}" type="button" class="btn btn-outline-primary pil"
+                    style="border-radius: 50px;" th:text="${datak.nama_kategori}"
+                    th:data-filter="${datak.nama_kategori}"></a>
             </div>
         </div>
         <div class="row">
@@ -57,9 +57,9 @@
                             <img th:src="@{/streamImage(filename=${data.filename})}"
                                 style="width: 100%; height:200px; object-fit: cover; border-top-left-radius: 10%; border-top-right-radius: 10%;">
                             <h5 th:text="${data.nama}" class="card-title"></h5>
-                            <p th:text="${data.kategori}" th:class="'kategori'+${kategori.id_kategori}+''"></p>
+                            <p th:text="${data.kategori}" class="kategoris"></p>
                             <p th:text="${data.deskripsi}"></p>
-                            <!-- <p th:text="${data.harga}"></p> -->
+                            <p th:text="${data.harga}"></p>
                         </div>
                     </div>
                 </div>
@@ -81,7 +81,7 @@
                                 <input type="text" id="nama" class="form-control" required="true" placeholder="nama" />
                                 <label for="nama">Nama Barang</label>
                             </div>
-                            <div class="form-floating mb-3">
+                            <div class="form-floating mb-3" id="formkat">
                                 <select type='text' id='Kategori' class='form-control'>
                                     <option value='' selected disabled>--Kategori Divisi--</option>
                                     <option th:each="cat : ${kategori}" th:id="${cat.nama_kategori}"
@@ -195,6 +195,20 @@
                 layoutMode: 'fitRows'
             });
 
+            $("#filters .pil").on('click', function () {
+                $("#filters .pil").removeClass("active");
+                $(this).addClass("active");
+
+                var dataFilterValue = $(this).attr("data-filter");
+
+                $grid.isotope({
+                    filter: function () {
+                        var cat = $(this).find(".kategoris").text();
+                        return dataFilterValue === "" || cat.includes(dataFilterValue);
+                    }
+                });
+            });
+
             // Search Input Event Listener
             $("#searchData").keyup(function () {
                 var searchText = $(this).val().toLowerCase();
@@ -214,6 +228,7 @@
             var opval = $(this).val();
             if (opval == "tambahOwn") {
                 $('#modalOwn').modal("show");
+                $('#modalTambah').modal("hide");
             }
         });
 
@@ -233,6 +248,9 @@
                         showConfirmButton: false,
                         timer: 1500,
                     }).then((result) => {
+                        $('#modalOwn').modal("hide");
+                        $('#formkat').load(' #formkat');
+                        $('#modalTambah').modal("show");
                     });
                 })
                 .catch(function (obj) {
@@ -243,6 +261,9 @@
                         showConfirmButton: false,
                         timer: 1500,
                     }).then((result) => {
+                        $('#modalOwn').modal("hide");
+                        $('#formkat').load(' #formkat');
+                        $('#modalTambah').modal("show");
                     });
                 });
         };
