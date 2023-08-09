@@ -208,14 +208,14 @@ public class Sistem_Informasi_Controller {
         simasi.setHarga(harga);
         sistem_informasi_repository.save(simasi);
 
-        System.out.println(namafile);
-
-        try {
-            files.transferTo(new File(env.getProperty("URL.FILE_IN_IMAGE") + "/" + namafile));
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        if(files != null){
+            try {
+                files.transferTo(new File(env.getProperty("URL.FILE_IN_IMAGE") + "/" + namafile));
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
         }
-
+        
         data.put("icon", "success");
         data.put("message", "data berhasil di Edit");
         return new ResponseEntity<>(data, HttpStatus.OK);
