@@ -140,7 +140,7 @@
                             </div>
                             <div class="form-floating mb-3" id="formkate">
                                 <select type='text' id='Kategorie' class='form-control'>
-                                    <option value='' selected disabled>--Kategori Divisi--</option>
+                                    <option value='' disabled>--Kategori Divisi--</option>
                                     <option th:each="cat : ${kategori}" th:id="${cat.nama_kategori}"
                                         th:value="${cat.nama_kategori}" th:text="${cat.nama_kategori}"></option>
                                     <option value="tambahOwn">Tambah Kategori Divisi</option>
