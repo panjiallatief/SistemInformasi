@@ -5,6 +5,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
+import com.SistemInformasi.SistemInformasi.Entity.Kategori;
 import com.SistemInformasi.SistemInformasi.Entity.Media;
 import com.SistemInformasi.SistemInformasi.Entity.SistemInformasi;
+import com.SistemInformasi.SistemInformasi.Repository.Kategori_Repository;
 import com.SistemInformasi.SistemInformasi.Repository.Media_Repository;
 import com.SistemInformasi.SistemInformasi.Repository.Sistem_Informasi_Repository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -40,6 +43,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale.Category;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
@@ -56,19 +60,19 @@ public class Sistem_Informasi_Controller {
     @Autowired
     private Media_Repository mediarepository;
 
+    @Autowired
+    private Kategori_Repository kategori_Repository;
+
     @GetMapping(value = "/")
     public String index(Model model) {
-        List<SistemInformasi> dataa = sistem_informasi_repository.findAll(Sort.by(Sort.Direction.ASC, "updatedAt"));
-        model.addAttribute("data", dataa);
+        List<SistemInformasi> dataa = sistem_informasi_repository.findAll(Sort.by(Sort.Direction.ASC, "updatedAt"));        
+        model.addAttribute("data", dataa);       
+        List<Kategori> kateg = kategori_Repository.findAll();
+        model.addAttribute("kategori", kateg); 
+
         return "index";
     }
 
-    @GetMapping(value = "/findkategori")
-    public String findkategori(Model model, @RequestParam String kategori) {
-        List<SistemInformasi> dataa = sistem_informasi_repository.showkategori(kategori);
-        model.addAttribute("data", dataa);
-        return "index";
-    }
 
     @GetMapping(value = "/streamImage")
     public StreamingResponseBody handleRequest(@RequestParam String filename, HttpServletResponse response) {
@@ -207,6 +211,28 @@ public class Sistem_Informasi_Controller {
         data.put("icon", "success");
         data.put("message", "Data Berhasil di hapus");
         return new ResponseEntity<>(data, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/Inputkategori")
+    public ResponseEntity<Map> Inputkategori(@RequestParam String nama){
+      Map data = new HashMap<>();
+      Date date = new Date();
+
+      if(kategori_Repository.categoryboolean(nama)){
+        data.put("icon", "error");
+        data.put("message", "Nama Kategori Sudah Ada");
+        return new ResponseEntity<>(data, HttpStatus.NOT_FOUND);
+      }
+
+      Kategori category = new Kategori();
+      category.setNama_kategori(nama);
+      category.setUpdatedAt(date);
+      kategori_Repository.save(category);
+
+      data.put("icon", "success");
+      data.put("message", "Sukses Insert Kategori");
+      return new ResponseEntity<>(data, HttpStatus.OK);
+
     }
 
 }
