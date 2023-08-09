@@ -44,7 +44,7 @@
                 <a type="button" data-filter="" style="border-radius: 50px;"
                     class="btn btn-outline-primary pil active">All</a>
                 <a th:each="datak : ${kategori}" type="button" class="btn btn-outline-primary pil"
-                    style="border-radius: 50px;" th:text="${datak.nama_kategori}"
+                    style="border-radius: 50px; margin-right: 3px;" th:text="${datak.nama_kategori}"
                     th:data-filter="${datak.nama_kategori}"></a>
             </div>
         </div>
