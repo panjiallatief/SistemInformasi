@@ -50,7 +50,7 @@
                             <h5 th:text="${data.nama}" class="card-title"></h5>
                             <p th:text="${data.kategori}" class="kategori"></p>
                             <p th:text="${data.deskripsi}"></p>
-                            <!-- <p th:text="${data.harga}"></p> -->
+                            <p th:text="${data.harga}"></p>
                         </div>
                     </div>
                 </div>
@@ -73,8 +73,12 @@
                                 <label for="nama">Nama Barang</label>
                             </div>
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="Kategori" name="Kategori"
-                                    placeholder="Kategori" value="" />
+                                    <select type='text' id='Kategori' class='form-control'>
+                                      <option value='' disabled>Kategori Divisi</option>
+                                      <option value="IT Broadcast">IT Broadcast</option>
+                                      <option value="NOC/MCR">NOC/MCR</option>
+                                      <option value="IT Office">IT Office</option>
+                                    </select>
                                 <label for="Kategori">Kategori</label>
                             </div>
                             <div class="form-floating mb-3">
@@ -166,7 +170,7 @@
 
             bodyFormData.append("files", inputFile.files[0]);
 
-            var url = `/post?nama=${$("#nama").val()}&deskripsi=${$("#Deskripsi").val()}&harga=${$("#Harga").val()}&kategori=${$("#Kategori").val()}`;
+            var url = `/post?nama=${$("#nama").val()}&deskripsi=${$("#Deskripsi").val()}&harga=${$("#Harga").val()}&kategori=${$("#Kategori option:selected").val()}`;
             Swal.fire({
                 title: 'Please wait...',
                 html: 'Uploading file',
