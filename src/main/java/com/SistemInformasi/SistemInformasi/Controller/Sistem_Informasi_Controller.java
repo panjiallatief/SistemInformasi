@@ -73,6 +73,15 @@ public class Sistem_Informasi_Controller {
         return "index";
     }
 
+    @GetMapping(value = "/admin")
+    public String admin(Model model){
+        List<SistemInformasi> dataa = sistem_informasi_repository.findAll(Sort.by(Sort.Direction.ASC, "updatedAt"));        
+        model.addAttribute("data", dataa);       
+        List<Kategori> kateg = kategori_Repository.findAll();
+        model.addAttribute("kategori", kateg); 
+        return "admin";
+    }
+
 
     @GetMapping(value = "/streamImage")
     public StreamingResponseBody handleRequest(@RequestParam String filename, HttpServletResponse response) {

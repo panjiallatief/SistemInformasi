@@ -36,6 +36,8 @@
     <div class="container justify-content-center mt-5">
         <div class="input-group">
             <input id="searchData" type="text" class="form-control" placeholder="Search">
+            <button type="button" class="btn btn-outline-primary" style="margin-left: 3px;" data-bs-toggle="modal"
+                data-bs-target="#modalTambah">TAMBAH DATA</button>
         </div>
         <div class="row text-center pt-3 mb-5" style="width: 100%;">
             <div id="filters" class="filters">
@@ -48,8 +50,7 @@
         </div>
         <div class="row">
             <div th:each="data : ${data}" class="col-lg-3 col-md-4 col-sm-6 itemss">
-                <div class="card-container " data-bs-toggle="modal" data-bs-target="#modalDetail"
-                    th:onclick="'findbyid(' + ${data.id} + ')'">
+                <div class="card-container ">
                     <div class="card mt-3" style="border-radius: 10%;">
                         <div class="card-body text-center">
                             <img th:src="@{/streamImage(filename=${data.filename})}"
@@ -58,6 +59,13 @@
                             <p th:text="${data.kategori}" class="kategoris"></p>
                             <p th:text="${data.deskripsi}"></p>
                             <p th:text="${data.harga}"></p>
+                            <div class="justify-content-center">
+                                <a type="button" class="btn btn-warning" data-bs-toggle="modal"
+                                    data-bs-target="#modalEdit" th:onclick="'findbyid(' + ${data.id} + ')'"><i
+                                        class="fa-solid fa-pen-to-square text-white"></i></a>
+                                <a type="button" class="btn btn-danger" th:onclick="'delbyid(' + ${data.id} + ')'"><i
+                                        class="fa-solid fa-trash"></i></a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -107,6 +115,56 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" id="nambah" onclick="nambahedit()" class="btn btn-primary">
+                        Simpan Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="modalEdit" tabindex="-1" aria-hidden="true" style="backdrop-filter: blur(10px);">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">EDIT DATA</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formMateri" action="#" enctype="multipart/form-data">
+                        <div class="card-body">
+                            <div class="form-floating mb-3">
+                                <input type="text" id="namae" class="form-control" required="true" placeholder="nama" />
+                                <input type="text" id="iddata" class="form-control" hidden />
+                                <label for="nama">Nama Barang</label>
+                            </div>
+                            <div class="form-floating mb-3" id="formkate">
+                                <select type='text' id='Kategorie' class='form-control'>
+                                    <option value='' selected disabled>--Kategori Divisi--</option>
+                                    <option th:each="cat : ${kategori}" th:id="${cat.nama_kategori}"
+                                        th:value="${cat.nama_kategori}" th:text="${cat.nama_kategori}"></option>
+                                    <option value="tambahOwn">Tambah Kategori Divisi</option>
+                                </select>
+                                <label for="Kategori">Kategori</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="Hargae" name="Harga" placeholder="Harga"
+                                    value="" />
+                                <label for="Harga">Harga</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="Deskripsie" name="Deskripsi"
+                                    placeholder="Deskripsi" value="" />
+                                <label for="Deskripsi">Deskripsi</label>
+                            </div>
+                            <div class="form-group file_container mb-3">
+                                <h5 for="file" class="form-label">Upload Files</h5>
+                                <input type="file" class="form-control" name="filese" id="filee" accept="image/*" />
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="nambahe" onclick="editaja()" class="btn btn-primary">
                         Simpan Data
                     </button>
                 </div>
@@ -320,12 +378,95 @@
             $.get(`/find?id=${id}`, function (datas) {
                 var si = datas.data;
                 $("#tempatprev").attr("src", `/streamImage?filename=${si.filename}`);
-                // $("#detailJudul").val(si.nama);
-                // $("#kategoris").val(si.kategori);
-                // $("#hargabar").val(si.harga);
-                // $("#deksripsis").val(si.deskripsi);
+
+                //edit modal
+                $("#namae").val(si.nama);
+                $("#kategorie").val(si.kategori);
+                $("#Hargae").val(si.harga);
+                $("#Deskripsie").val(si.deskripsi);
+                $("#iddata").val(si.id);
             })
         }
+
+        function editaja(id) {
+            var bodyFormData = new FormData();
+            var inputFile = document.getElementsByName("files")[0]; // Assuming you have only one input for the file
+
+            bodyFormData.append("files", inputFile.files[0]);
+
+            var url = `/editmateri?id=${$("#iddata").val()}&nama=${$("#namae").val()}&deskripsi=${$("#Deskripsie").val()}&harga=${$("#Hargae").val()}&kategori=${$("#Kategorie option:selected").val()}`;
+            Swal.fire({
+                title: 'Please wait...',
+                html: 'Uploading file',
+                showConfirmButton: false,
+                allowOutsideClick: false,
+                willOpen: () => {
+                    Swal.showLoading();
+                },
+            })
+            axios({
+                method: "put",
+                url: url,
+                data: bodyFormData,
+                headers: { "Content-Type": "multipart/form-data" },
+            })
+                .then(function (response) {
+                    Swal.fire({
+                        position: "center",
+                        icon: response.data.icon,
+                        title: response.data.message,
+                        showConfirmButton: true,
+                        confirmButtonColor: '#198754'
+                    }).then((result) => {
+
+                        location.reload();
+
+                    });
+                })
+                .catch(function (obj) {
+                    Swal.fire({
+                        position: "center",
+                        icon: obj.response.data.icon,
+                        title: obj.response.data.message,
+                        showConfirmButton: true,
+                        confirmButtonColor: '#198754'
+                    }).then((result) => {
+
+                        location.reload();
+
+                    });
+                })
+        }
+
+        function delbyid(id) {
+            Swal.fire({
+                title: "Yakin ingin menghapus Data?",
+                showCancelButton: true,
+                cancelButtonText: "Tidak",
+                confirmButtonText: "Ya",
+                confirmButtonColor: "#dc3545",
+            }).then((result) => {
+                /* Read more about isConfirmed, isDenied below */
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: `/delete?id=${id}`,
+                        method: "delete",
+                        success: function (data, textStatus, jqXHR) {
+                            Swal.fire({
+                                position: "center",
+                                icon: "success",
+                                title: data.message,
+                                showConfirmButton: false,
+                                timer: 1500,
+                            }).then((result) => {
+                                location.reload();
+                            });
+                        },
+                    });
+                }
+            });
+        }
+
 
         /*]]>*/
     </script>
