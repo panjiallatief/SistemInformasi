@@ -138,6 +138,7 @@
                             <div class="form-floating mb-3">
                                 <input type="text" id="namae" class="form-control" required="true" placeholder="nama" />
                                 <input type="text" id="iddata" class="form-control" hidden />
+                                <input type="text" id="namafiles" class="form-control" hidden />
                                 <label for="nama">Nama Barang</label>
                             </div>
                             <div class="form-floating mb-3" id="formkate">
@@ -388,6 +389,7 @@
                 $("#Hargae").val(si.harga);
                 $("#Deskripsie").val(si.deskripsi);
                 $("#iddata").val(si.id);
+                $("#namafiles").val(si.filename)
             })
         }
 
@@ -398,7 +400,7 @@
 
             bodyFormData.append("files", inputFile.files[0]);
 
-            var url = `/editmateri?id=${$("#iddata").val()}&nama=${$("#namae").val()}&deskripsi=${$("#Deskripsie").val()}&harga=${$("#Hargae").val()}&kategori=${$("#Kategorie option:selected").val()}`;
+            var url = `/editmateri?id=${$("#iddata").val()}&nama=${$("#namae").val()}&deskripsi=${$("#Deskripsie").val()}&harga=${$("#Hargae").val()}&kategori=${$("#Kategorie option:selected").val()}&namafile=${$("#namafiles").val()}`;
             Swal.fire({
                 title: 'Please wait...',
                 html: 'Uploading file',
