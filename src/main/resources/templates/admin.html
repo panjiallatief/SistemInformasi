@@ -97,6 +97,16 @@
                                 <label for="Kategori">Kategori</label>
                             </div>
                             <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="brand" name="brand" placeholder="brand"
+                                    value="" />
+                                <label for="brand">Brand</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="tipe" name="tipe" placeholder="tipe"
+                                    value="" />
+                                <label for="tipe">Type</label>
+                            </div>
+                            <div class="form-floating mb-3">
                                 <input type="text" class="form-control" id="Harga" name="Harga" placeholder="Harga"
                                     value="" />
                                 <label for="Harga">Harga</label>
@@ -148,6 +158,16 @@
                                 <label for="Kategori">Kategori</label>
                             </div>
                             <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="brande" name="brand" placeholder="brand"
+                                    value="" />
+                                <label for="brand">Brand</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="tipee" name="tipe" placeholder="tipe"
+                                    value="" />
+                                <label for="tipe">Type</label>
+                            </div>
+                            <div class="form-floating mb-3">
                                 <input type="text" class="form-control" id="Hargae" name="Harga" placeholder="Harga"
                                     value="" />
                                 <label for="Harga">Harga</label>
@@ -175,7 +195,7 @@
 
     <div id="modalDetail" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="modalDetail"
         aria-hidden="true" style="backdrop-filter: blur(10px);">
-        <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <!-- <div class="modal-body"> -->
                 <img class="img-responsive" id="tempatprev" src="" />
@@ -331,7 +351,7 @@
 
             bodyFormData.append("files", inputFile.files[0]);
 
-            var url = `/post?nama=${$("#nama").val()}&deskripsi=${$("#Deskripsi").val()}&harga=${$("#Harga").val()}&kategori=${$("#Kategori option:selected").val()}`;
+            var url = `/post?nama=${$("#nama").val()}&deskripsi=${$("#Deskripsi").val()}&brand=${$("#brand").val()}&type=${$("#tipe").val()}&harga=${$("#Harga").val()}&kategori=${$("#Kategori option:selected").val()}`;
             Swal.fire({
                 title: 'Please wait...',
                 html: 'Uploading file',
@@ -382,6 +402,8 @@
 
                 //edit modal
                 $("#namae").val(si.nama);
+                $("#brande").val(si.brand);
+                $("#tipee").val(si.type);
                 $("#kategorie").val(si.kategori);
                 $("#Hargae").val(si.harga);
                 $("#Deskripsie").val(si.deskripsi);
@@ -397,7 +419,7 @@
 
             bodyFormData.append("files", inputFile.files[0]);
 
-            var url = `/editmateri?id=${$("#iddata").val()}&nama=${$("#namae").val()}&deskripsi=${$("#Deskripsie").val()}&harga=${$("#Hargae").val()}&kategori=${$("#Kategorie option:selected").val()}&namafile=${$("#namafiles").val()}`;
+            var url = `/editmateri?id=${$("#iddata").val()}&nama=${$("#namae").val()}&deskripsi=${$("#Deskripsie").val()}&brand=${$("#brande").val()}&type=${$("#tipee").val()}&harga=${$("#Hargae").val()}&kategori=${$("#Kategorie option:selected").val()}&namafile=${$("#namafiles").val()}`;
             Swal.fire({
                 title: 'Please wait...',
                 html: 'Uploading file',
