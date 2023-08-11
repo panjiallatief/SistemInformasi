@@ -105,7 +105,7 @@ public class Sistem_Informasi_Controller {
             MediaType.MULTIPART_FORM_DATA_VALUE }, produces = APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<Map> post(@RequestParam String nama, @RequestParam String deskripsi,
-            @RequestParam String harga, @RequestParam String kategori,
+            @RequestParam String harga, @RequestParam String kategori, @RequestParam String brand, @RequestParam String type,
             @RequestPart(value = "files", required = false) MultipartFile files) throws JsonProcessingException {
         Map data = new HashMap<>();
 
@@ -142,6 +142,18 @@ public class Sistem_Informasi_Controller {
             simasi.setHarga("-");
         } else {
             simasi.setHarga(harga);
+        }
+
+        if (brand.equals("")) {
+            simasi.setBrand("-");
+        } else {
+            simasi.setBrand(brand);
+        }
+
+        if (type.equals("")) {
+            simasi.setType("-");
+        } else {
+            simasi.setType(type);
         }
 
         sistem_informasi_repository.save(simasi);
