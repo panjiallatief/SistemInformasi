@@ -139,7 +139,7 @@ public class Sistem_Informasi_Controller {
         }
 
         if (harga.equals("")) {
-            simasi.setHarga("-");
+            simasi.setHarga("-"); 
         } else {
             simasi.setHarga(harga);
         }
