@@ -105,7 +105,8 @@ public class Sistem_Informasi_Controller {
             MediaType.MULTIPART_FORM_DATA_VALUE }, produces = APPLICATION_JSON_VALUE, method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<Map> post(@RequestParam String nama, @RequestParam String deskripsi,
-            @RequestParam String harga, @RequestParam String kategori, @RequestParam String brand, @RequestParam String type,
+            @RequestParam String harga, @RequestParam String kategori, @RequestParam String brand,
+            @RequestParam String type,
             @RequestPart(value = "files", required = false) MultipartFile files) throws JsonProcessingException {
         Map data = new HashMap<>();
 
@@ -139,7 +140,7 @@ public class Sistem_Informasi_Controller {
         }
 
         if (harga.equals("")) {
-            simasi.setHarga("-"); 
+            simasi.setHarga("-");
         } else {
             simasi.setHarga(harga);
         }
@@ -199,7 +200,8 @@ public class Sistem_Informasi_Controller {
             MediaType.MULTIPART_FORM_DATA_VALUE }, produces = APPLICATION_JSON_VALUE, method = RequestMethod.PUT)
     @ResponseBody
     public ResponseEntity<Map> editmateri(@RequestParam(required = false) String nama,
-            @RequestParam(required = false) String harga,
+            @RequestParam(required = false) String harga, @RequestParam(required = false) String brand,
+            @RequestParam(required = false) String type,
             @RequestParam(required = false) String deskripsi,
             @RequestParam(required = false) String kategori, @RequestParam(required = true) Integer id,
             @RequestParam String namafile,
@@ -215,19 +217,21 @@ public class Sistem_Informasi_Controller {
         SistemInformasi simasi = sistem_informasi_repository.getById(id);
         simasi.setNama(nama);
         simasi.setUpdatedAt(date);
+        simasi.setBrand(brand);
+        simasi.setType(type);
         simasi.setDeskripsi(deskripsi);
         simasi.setKategori(kategori);
         simasi.setHarga(harga);
         sistem_informasi_repository.save(simasi);
 
-        if(files != null){
+        if (files != null) {
             try {
                 files.transferTo(new File(env.getProperty("URL.FILE_IN_IMAGE") + "/" + namafile));
             } catch (IOException e) {
                 System.out.println(e.getMessage());
             }
         }
-        
+
         data.put("icon", "success");
         data.put("message", "data berhasil di Edit");
         return new ResponseEntity<>(data, HttpStatus.OK);
